@@ -1,0 +1,107 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% M. Barr uses the following:  "It gives a \to that can be used as
+% $A\to B$ or $A\to^f B$ or $A\to^{f\o g\o h}B$ or even $A\to^f_gB$.  The
+% arrow will grow to fit the label(s).  There are similar definitions for
+% \two and \tofro, for which you really might want labels both above and
+% below.  Actually, by reading your definition of \kto, I was able to
+% simplify this.  But it is still nice to have the optional arguments.
+% There is only caveat: although you can have one or the other or both
+% labels, if you have both the upper must precede the lower.  These defs
+% must either be placed in a style file xor surrounded by \makeatletter
+% and \makeatother (but NOT both)."  (Modifications by rags)
+% The definitions below look more elaborate than they need to be.
+% The reason is that an empty asscript will still cause extra vertical
+% spacing and the only way to avoid ugly extra space seems to be using
+% some such method as this.
+
+\makeatletter
+
+% In-text size:
+
+\newdimen\w@dth
+
+\def\setw@dth#1#2{\setbox\z@\hbox{\scriptsize $#1$}\w@dth=\wd\z@
+\setbox\@ne\hbox{\scriptsize $#2$}\ifnum\w@dth<\wd\@ne \w@dth=\wd\@ne \fi
+\advance\w@dth by 1.2em}
+
+\def\t@^#1_#2{\allowbreak\def\n@one{#1}\def\n@two{#2}\mathrel
+{\setw@dth{#1}{#2}
+\mathop{\hbox to \w@dth{\rightarrowfill}}\limits
+\ifx\n@one\empty\else ^{\box\z@}\fi
+\ifx\n@two\empty\else _{\box\@ne}\fi}}
+\def\t@@^#1{\@ifnextchar_ {\t@^{#1}}{\t@^{#1}_{}}}
+
+
+\def\t@left^#1_#2{\def\n@one{#1}\def\n@two{#2}\mathrel{\setw@dth{#1}{#2}
+\mathop{\hbox to \w@dth{\leftarrowfill}}\limits
+\ifx\n@one\empty\else ^{\box\z@}\fi
+\ifx\n@two\empty\else _{\box\@ne}\fi}}
+\def\t@@left^#1{\@ifnextchar_ {\t@left^{#1}}{\t@left^{#1}_{}}}
+
+
+\def\two@^#1_#2{\def\n@one{#1}\def\n@two{#2}\mathrel{\setw@dth{#1}{#2}
+\mathop{\vcenter{\hbox to \w@dth{\rightarrowfill}\kern-1.7ex
+                 \hbox to \w@dth{\rightarrowfill}}%
+       }\limits
+\ifx\n@one\empty\else ^{\box\z@}\fi
+\ifx\n@two\empty\else _{\box\@ne}\fi}}
+\def\tw@@^#1{\@ifnextchar_ {\two@^{#1}}{\two@^{#1}_{}}}
+
+
+\def\tofr@^#1_#2{\def\n@one{#1}\def\n@two{#2}\mathrel{\setw@dth{#1}{#2}
+\mathop{\vcenter{\hbox to \w@dth{\rightarrowfill}\kern-1.7ex
+                 \hbox to \w@dth{\leftarrowfill}}%
+       }\limits
+\ifx\n@one\empty\else ^{\box\z@}\fi
+\ifx\n@two\empty\else _{\box\@ne}\fi}}
+\def\t@fr@^#1{\@ifnextchar_ {\tofr@^{#1}}{\tofr@^{#1}_{}}}
+
+% Displaysize:
+
+\newdimen\W@dth
+\def\setW@dth#1#2{\setbox\z@\hbox{$#1$}\W@dth=\wd\z@
+\setbox\@ne\hbox{$#2$}\ifnum\W@dth<\wd\@ne \W@dth=\wd\@ne \fi
+\advance\W@dth by 1.2em}
+
+\def\T@^#1_#2{\allowbreak\def\N@one{#1}\def\N@two{#2}\mathrel
+{\setW@dth{#1}{#2}
+\mathop{\hbox to \W@dth{\rightarrowfill}}\limits
+\ifx\N@one\empty\else ^{\box\z@}\fi
+\ifx\N@two\empty\else _{\box\@ne}\fi}}
+\def\T@@^#1{\@ifnextchar_ {\T@^{#1}}{\T@^{#1}_{}}}
+
+
+\def\T@left^#1_#2{\def\N@one{#1}\def\N@two{#2}\mathrel{\setW@dth{#1}{#2}
+\mathop{\hbox to \W@dth{\leftarrowfill}}\limits
+\ifx\N@one\empty\else ^{\box\z@}\fi
+\ifx\N@two\empty\else _{\box\@ne}\fi}}
+\def\T@@left^#1{\@ifnextchar_ {\T@left^{#1}}{\T@left^{#1}_{}}}
+
+
+\def\Tofr@^#1_#2{\def\N@one{#1}\def\N@two{#2}\mathrel{\setW@dth{#1}{#2}
+\mathop{\vcenter{\hbox to \W@dth{\rightarrowfill}\kern-1.7ex
+                 \hbox to \W@dth{\leftarrowfill}}%
+       }\limits
+\ifx\N@one\empty\else ^{\box\z@}\fi
+\ifx\N@two\empty\else _{\box\@ne}\fi}}
+\def\T@fr@^#1{\@ifnextchar_ {\Tofr@^{#1}}{\Tofr@^{#1}_{}}}
+
+
+\def\Two@^#1_#2{\def\N@one{#1}\def\N@two{#2}\mathrel{\setW@dth{#1}{#2}
+\mathop{\vcenter{\hbox to \W@dth{\rightarrowfill}\kern-1.7ex
+                 \hbox to \W@dth{\rightarrowfill}}%
+       }\limits
+\ifx\N@one\empty\else ^{\box\z@}\fi
+\ifx\N@two\empty\else _{\box\@ne}\fi}}
+\def\Tw@@^#1{\@ifnextchar_ {\Two@^{#1}}{\Two@^{#1}_{}}}
+
+
+\def\to{\@ifnextchar^ {\t@@}{\t@@^{}}}
+\def\from{\@ifnextchar^ {\t@@left}{\t@@left^{}}}
+\def\tofro{\@ifnextchar^ {\t@fr@}{\t@fr@^{}}}
+\def\To{\@ifnextchar^ {\T@@}{\T@@^{}}}
+\def\From{\@ifnextchar^ {\T@@left}{\T@@left^{}}}
+\def\Two{\@ifnextchar^ {\Tw@@}{\Tw@@^{}}}
+\def\Tofro{\@ifnextchar^ {\T@fr@}{\T@fr@^{}}}
+
+\makeatother

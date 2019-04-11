@@ -1,0 +1,179 @@
+\documentclass{article}
+
+
+
+\title{Coherently closed tangent categories and the differential \texorpdfstring{$\lambda$}{Lambda}-calculus}
+\author{Robin Cockett and Jonathan Gallagher}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Package imports
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Etex purportedly makes tex more stable
+\usepackage{etex}
+
+% A text colorization package
+\usepackage[dvipsnames]{xcolor}
+% Growing to and froms
+\usepackage{BarrTo}
+% Use the whole page
+% Make links jump-able
+\usepackage[colorlinks,allcolors=MidnightBlue]{hyperref} 
+% Standard math packages
+\usepackage{amsfonts,amsmath,amssymb,amsthm}
+% For proof trees
+\usepackage{proof}
+% For commutative diagrams
+\usepackage{tikz-cd}
+
+% General tikz setup
+\usepackage{tikz}
+% For zig-zags in diagrams
+\usetikzlibrary{decorations.pathmorphing}
+% For squiggly lines!!!
+\tikzset{snake it/.style={decorate, decoration=snake}}
+% For cool arrow heads
+\usetikzlibrary{arrows,calc}  
+
+% Because sometimes tikz is annoying
+\usepackage[all]{xy}
+
+% Apparently, microtype makes everything look better
+\usepackage{microtype}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Nullary commands
+
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\tpsh}{\mathsf{TPsh}}
+\newcommand{\ev}{\mathsf{ev}}
+\newcommand{\x}{\times}
+\newcommand{\ww}{\mathcal{W}_1}
+\newcommand{\ox}{\otimes}
+\newcommand{\blank}{\underline{~}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\X}{\mathbb{X}}
+\newcommand{\set}{\mathsf{Set}}
+\newcommand{\cvs}{\mathsf{CVS}}
+\newcommand{\sman}{\mathsf{SMan}}
+\newcommand{\freS}{\textsf{Fr\'{e}-S}}
+\newcommand{\freM}{\textsf{Fr\'{e}Man}}
+\newcommand{\weil}{\mathsf{Weil}}
+\newcommand{\frol}{\textsf{Fr\"{o}l}~}
+\newcommand{\weilS}{\mathsf{Weil}\text{-}\mathsf{S}}
+\newcommand{\proves}{\vdash}
+\newcommand{\<}{\left\langle}
+\renewcommand{\>}{\right\rangle}
+\newcommand{\id}{\mathsf{Id}}
+\newcommand{\Y}{\mathbb{Y}}
+\newcommand{\act}{\otimes_\infty}
+\newcommand{\microl}{\mathsf{Microl}}
+\newcommand{\microlexp}{\mathsf{Microl\text{-}Exp}}
+\newcommand{\Mod}{\mathsf{Mod}}
+\newcommand{\smicrol}{\mathsf{SMicrol}}
+\renewcommand{\lim}{\mathsf{lim}}
+\newcommand{\colim}{\mathsf{colim}}
+\newcommand{\yoneda}{\mathcal{Y}}
+\newcommand{\cur}{\mathsf{cur}}
+\newcommand{\frolicher}{Fr\"{o}licher~}   
+\newcommand{\ex}{\mathsf{ex}}
+\newcommand{\inv}{\text{-}}
+\newcommand{\pull}{\mathsf{Pull}}
+\newcommand{\Q}{\mathscr{Q}}
+\newcommand{\bun}{\mathsf{bun}}
+\newcommand{\bunD}{\mathsf{bun}_{\mathcal{D}}}
+\newcommand{\dbun}{\mathsf{DBun}}
+\newcommand{\V}{\mathcal{V}}
+\newcommand{\C}{\underline{C}}
+\newcommand{\splitd}{\mathsf{Split}_{\mathcal{E}_{\mathcal{D}}}(\X)}
+\newcommand{\fun}{\mathsf{Fun}}
+\newcommand{\tang}{\mathsf{Tan}}
+\newcommand{\OR}{\mathcal{O}(\R)}
+
+% to make a small vertical bar
+% \newcommand{\vertrule}[1][1ex]{\rule{.4pt}{#1}}
+% \newcommand{\module}{{\rightarrow \!\!\!\!\!  \vertrule{}}}
+
+\newcommand{\minus}{\scalebox{0.5}[1.0]{\( - \)}}
+\newcommand{\betaT}{\underline{\beta}}
+\newcommand{\betaTA}{\underline{\beta_A}}
+\newcommand{\betaTAN}{\underline{\beta\eta_A}}
+\newcommand{\etaT}{\underline{\eta}}
+\newcommand{\betaetaT}{\underline{\beta\eta}}
+\newcommand{\fv}{\mathsf{fv}}
+\renewcommand{\split}{\mathsf{Split}}
+\newcommand{\cak}{\mathsf{k}}
+\newcommand{\cas}{\mathsf{s}}
+\renewcommand{\d}{\mathsf{d}}
+\newcommand{\LambdaA}{\Lambda_A}
+\newcommand{\LambdaD}{\Lambda_{\beta \partial}}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\CC}{\mathcal{C}}
+\newcommand{\T}{\mathcal{T}}
+\newcommand{\mws}{\mathsf{Mod}(\mathcal{W}_1,\set)}
+\newcommand{\sw}{\mathsf{sw}}
+\newcommand{\Th}{\mathsf{Th}}
+\newcommand{\bind}{\! \leftslice \!}
+\newcommand{\symm}{\smile}
+\newcommand{\devs}{\!\!\! \begin{tikzcd}[ampersand replacement=\&] {} \arrow{r}[anchor=center]{\bigcirc} \& {} \end{tikzcd}\!\!\!}
+\newcommand{\crdevs}{\!\!\!\begin{tikzcd}[ampersand replacement=\&] {} \arrow{r}[anchor=center]{\cap} \& {} \end{tikzcd}\!\!\!}
+\newcommand{\sdevs}{\!\!\!\begin{tikzcd}[ampersand replacement=\&] {} \arrow{r}[anchor=center]{\cup} \& {} \end{tikzcd} \!\!\!}
+\newcommand{\modto}{{\to}_{/\sim}}
+\newcommand{\nf}{\mathsf{nf}}
+
+
+% Unary commands
+\newcommand{\w}[1]{\ensuremath{{#1}\text{-}\mathcal{W}}_1}
+\newcommand{\W}[1]{
+    \ensuremath{
+        {#1}\text{-}\mathsf{Weil}
+    }
+ }
+\newcommand{\den}[1]{{\left\llbracket {#1} \right\rrbracket}}
+\newcommand{\norm}[1]{\left| \left| {#1} \right| \right|}
+
+% 
+% \newcommand{\rightarrow}{\rightarrow\mathrel{\mkern-14mu}\rightarrow}
+
+\newcommand{\xtwoheadrightarrow}[2][]{%
+  \xrightarrow[#1]{#2}\mathrel{\mkern-20mu}\rightarrow
+}
+
+
+% Binary commands 
+\renewcommand{\deduce}[2]{\infer{#2}{#1}}
+\newcommand{\stacktensor}[2]{\overset{#1}{\underset{#2}{\ox}}}
+
+% 3-ary
+\newcommand{\subst}[3]{{#3}[#1/#2]}
+\newcommand{\diffl}[3]{ \frac{\partial {#1}}{\partial {#2}}\cdot {#3}}
+\newcommand{\diffp}[3]{ \frac{\partial {#1}}{\partial #2}\cdot {#3}     }
+
+% 4-ary commands
+\newcommand{\diff}[4]{\frac{\partial {#1}}{\partial {#2}}({#3})\cdot {#4} }
+\newcommand{\dtower}[4]{\frac{#1}{#2}(#3)\cdot (#4)}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Theorems
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{obs}[theorem]{Observation}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{rmk}[theorem]{Remark}
+\newtheorem{eg}[theorem]{Example}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{defn}[theorem]{Definition}
+
+\begin{document}
+\maketitle
+
+
+\end{document}
